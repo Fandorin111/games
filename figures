@@ -1,0 +1,16 @@
+
+
+```python
+import random
+
+def guess_the_number():
+    number = random.randint(1, 100)
+    attempts = 0
+    print("Угадайте число от 1 до 100!")
+
+    while True:
+        guess = int(input("Ваш вариант: "))
+        attempts += 1
+        if guess < number:
+            print("Загаданное
+[media pointer="sediment://file_88fdaf964834303c0eacd28d4fb256f8395159a8cb10a5b7ba7dcc96e8dcc9b1df462079404e2aa8e6e8de6740b5d9d4"]
