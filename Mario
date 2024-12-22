@@ -1,0 +1,91 @@
+import pygame
+import sys
+
+# Инициализация Pygame
+pygame.init()
+
+# Размеры экрана
+WIDTH, HEIGHT = 800, 600
+
+# Настройка экрана
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Супер Марио Клон")
+
+# Цвета
+WHITE = (255, 255, 255)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+
+# Переменные игрока
+player_width, player_height = 50, 50
+player_x, player_y = 100, 500
+player_speed = 5
+player_jump_power = 15
+player_velocity_y = 0
+
+# Гравитация
+gravity = 0.8
+on_ground = False
+
+# Платформы
+platforms = [
+    pygame.Rect(50, 550, 700, 20),
+    pygame.Rect(200, 450, 150, 20),
+    pygame.Rect(400, 350, 150, 20),
+    pygame.Rect(600, 250, 150, 20),
+]
+
+# Главный цикл игры
+clock = pygame.time.Clock()
+
+while True:
+    # Обработка событий
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    # Управление игроком
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        player_x -= player_speed
+    if keys[pygame.K_RIGHT]:
+        player_x += player_speed
+    if keys[pygame.K_SPACE] and on_ground:
+        player_velocity_y = -player_jump_power
+        on_ground = False
+
+    # Применение гравитации
+    player_velocity_y += gravity
+    player_y += player_velocity_y
+
+    # Ограничение выхода за экран
+    if player_x < 0:
+        player_x = 0
+    if player_x + player_width > WIDTH:
+        player_x = WIDTH - player_width
+
+    # Проверка столкновений с платформами
+    on_ground = False
+    player_rect = pygame.Rect(player_x, player_y, player_width, player_height)
+    for platform in platforms:
+        if player_rect.colliderect(platform) and player_velocity_y > 0:
+            player_y = platform.top - player_height
+            player_velocity_y = 0
+            on_ground = True
+
+    # Рендеринг экрана
+    screen.fill(WHITE)
+
+    # Отрисовка платформ
+    for platform in platforms:
+        pygame.draw.rect(screen, GREEN, platform)
+
+    # Отрисовка игрока
+    pygame.draw.rect(screen, BLUE, player_rect)
+
+    # Обновление дисплея
+    pygame.display.flip()
+
+    # Ограничение FPS
+    clock.tick(60)
